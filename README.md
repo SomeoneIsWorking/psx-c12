@@ -26,17 +26,16 @@ that executable against the supported USA revision's SHA-256. `title.json` is th
 authority consumed by Python and by the catalog's `TitleIdentity`, which the framework checks (size,
 header words, SHA-256) before it maps the bytes.
 
-Run the independent verification command with a resolved psxport checkout and its documented native
-dependencies. This uses Clang, Ninja, and the frozen Python interpreter:
+There are no unit tests or gates. Build with Clang and Ninja:
 
 ```sh
-CC=clang CXX=clang++ uv run --frozen python -m tools.verify
+CC=clang CXX=clang++ uv run --frozen python external/psxport/tools/port/consumer_build.py --build build/agent --target c12_port
 ```
 
 `run.sh` and Linux CI resolve `external/psxport` through psxport's own `tools/psxport_fetch.py`, run from
 psxport `main` (`uv run --no-project https://raw.githubusercontent.com/SomeoneIsWorking/psxport/main/tools/psxport_fetch.py --auto`) — there is no
 per-port framework pin; a bare clone or CI gets psxport `main` — before invoking that framework's shared
-setup action and the same verifier. Its synthetic admission/style/execution checks require no game files. Dependency checkouts
+setup action and the build. Dependency checkouts
 and compiler outputs remain under `build/`; hosted success is distinct from real-title qualification.
 
 A bounded headless boot runs the built product with a step cap:
@@ -52,5 +51,3 @@ guest's own registered ready callback, the title loads and executes its disc-res
 primitives. `c12_frame_driver` proves the field step over synthetic guests with no game files.
 First boot execution alone is not gameplay conformance. Intended enhancements and platform releases
 are listed separately in [project state](docs/project-state.md).
-
-`c12_cpp_style` is the shared formatter, clang-tidy and ownership-policy check.
