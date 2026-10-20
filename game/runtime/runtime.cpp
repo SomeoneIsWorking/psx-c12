@@ -55,7 +55,7 @@ const GuestWidescreenProjection *Runtime::guestWidescreenProjection() const {
 }
 
 void Runtime::reportRun(Core &core) const {
-  const auto *driver = core.game != nullptr ? dynamic_cast<const FrameDriver *>(core.game->frameDriver.get()) : nullptr;
+  const auto *driver = core.game != nullptr ? core.game->frameDriverIf<FrameDriver>() : nullptr;
   if (driver == nullptr) {
     return;
   }
