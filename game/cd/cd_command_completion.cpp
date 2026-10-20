@@ -41,7 +41,7 @@ void deliverCommandStatus(Core &core, std::uint32_t response) {
   const R3000 saved = *static_cast<R3000 *>(&core);
   core.r[A0] = kLibCdStatusComplete;
   core.r[A1] = response;
-  const auto result = psx::cpu::dispatchGuest0(core, callback, psx::cpu::ExecutionBudget::currentTurn(core));
+  const auto result = psx::cpu::dispatchGuestNow(core, callback);
   *static_cast<R3000 *>(&core) = saved;
   lucent::debug("cdqueue",
                 "CdReadySync delivered completion to 0x{:08X} (status {}, response 0x{:08X})",
