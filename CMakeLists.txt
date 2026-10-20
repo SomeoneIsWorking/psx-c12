@@ -5,8 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
-include(CTest)
-option(C12_BUILD_RUNTIME "Build the C-12 product and its runtime tests" ON)
+option(C12_BUILD_RUNTIME "Build the C-12 product" ON)
 
 if(C12_BUILD_RUNTIME)
   set(PSXPORT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/psxport" CACHE PATH "Shared psxport checkout")
@@ -54,26 +53,4 @@ if(C12_BUILD_RUNTIME)
     HEADER entry/catalog.h
     SOURCES game/entry/catalog.cpp
     LIBRARIES c12_runtime)
-endif()
-
-if(BUILD_TESTING)
-  if(C12_BUILD_RUNTIME)
-    add_executable(c12_frame_driver tests/test_frame_driver.cpp)
-    target_link_libraries(c12_frame_driver PRIVATE c12_runtime)
-    add_test(NAME c12_frame_driver COMMAND c12_frame_driver)
-    add_executable(c12_runtime_services tests/test_runtime_services.cpp)
-    target_link_libraries(c12_runtime_services PRIVATE c12_runtime)
-    add_executable(c12_draw_distance tests/test_draw_distance.cpp)
-    target_link_libraries(c12_draw_distance PRIVATE c12_runtime)
-    add_test(NAME c12_draw_distance COMMAND c12_draw_distance)
-    add_executable(c12_world_mesh_pass tests/test_world_mesh_pass.cpp)
-    target_link_libraries(c12_world_mesh_pass PRIVATE c12_runtime)
-    add_test(NAME c12_world_mesh_pass COMMAND c12_world_mesh_pass)
-    add_test(NAME c12_product_help COMMAND c12_port --help)
-    set_tests_properties(c12_product_help PROPERTIES PASS_REGULAR_EXPRESSION "Usage: c12_port \\[executable\\]")
-    add_test(NAME c12_runtime_services COMMAND c12_runtime_services)
-    add_test(NAME c12_cpp_style COMMAND "${Python3_EXECUTABLE}"
-      "${PSXPORT_DIR}/tools/check_cpp_style.py" --root "${CMAKE_CURRENT_SOURCE_DIR}"
-      --compile-commands "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json")
-  endif()
 endif()

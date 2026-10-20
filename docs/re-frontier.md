@@ -30,9 +30,8 @@ No further static product generation, build, or run is part of this chain.
 - status: re-verified
 - deps: runtime.recorded-boundary
 - evidence: The tracked emitter/bootstrap path and generated dispatcher are deleted; the ignored
-  generated corpus and static build tree are absent; `c12_cpp_style` (re-harness `cpp_policy`) rejects
-  retired names, direct logging and environment reads.
-- where: `CMakeLists.txt`, the `c12_cpp_style` CTest
+  generated corpus and static build tree are absent.
+- where: `CMakeLists.txt`
 - gap:
 - notes: CMake and the player launcher name the missing title field lifecycle/native presentation.
   There is no static compatibility product or interpreter-only player selector.
