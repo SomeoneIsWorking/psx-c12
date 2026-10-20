@@ -50,7 +50,7 @@ std::optional<psx::gpu::PacketPoolExtent> Runtime::packetPool(Core &core) const 
   return kPacketPoolWindows.extent(core);
 }
 
-const GuestWidescreenProjection *Runtime::guestWidescreenProjection() const {
+const psx::present::GuestWidescreenProjection *Runtime::guestWidescreenProjection() const {
   return &widescreenPolicy_;
 }
 

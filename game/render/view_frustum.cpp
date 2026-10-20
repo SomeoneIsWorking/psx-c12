@@ -52,7 +52,7 @@ void installViewFrustumOverride(Game &game) {
 
 void rebuildViewFrustumCorners(Core *host) {
   Core &core = *host;
-  const GuestProjectionPlan &plan = core.game->guestDisplay.plan();
+  const psx::present::GuestProjectionPlan &plan = core.game->guestDisplay.plan();
   const std::int32_t halfWidth =
       widenedFrustumHalfWidth(kRetailFrustumHalfWidth, {plan.nativeExtent.width, plan.presentationExtent.width});
   const std::int32_t distance = core.mem_r16s(kZoneProjectionDistanceAddress + 2);

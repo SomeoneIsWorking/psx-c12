@@ -773,7 +773,7 @@ void installWorldMeshPassOverride(Game &game) {
 
 void drawWorldMeshPass(Core *host) {
   Core &core = *host;
-  const GuestProjectionPlan &plan = core.game->guestDisplay.plan();
+  const psx::present::GuestProjectionPlan &plan = core.game->guestDisplay.plan();
   WorldMeshPass pass(
       core, widenedWindowMargin(plan.nativeExtent.width, plan.presentationExtent.width), currentDrawDistance());
   pass.run(core.r[kA0]);
