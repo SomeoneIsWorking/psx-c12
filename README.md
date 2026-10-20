@@ -41,7 +41,7 @@ and compiler outputs remain under `build/`; hosted success is distinct from real
 A bounded headless boot runs the built product with a step cap:
 
 ```sh
-PSXPORT_NATIVE_FRAMES=600 build/maintainer/c12_port
+PSXPORT_NATIVE_FRAMES=600 build/agent/c12_port
 ```
 
 The run-end report gives the executor counters, present intervals, audio queue and the title's

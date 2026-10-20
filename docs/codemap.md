@@ -23,8 +23,7 @@ framework side is `external/psxport/docs/codemap.md`.
 | `widescreenCvar`, `drawDistanceCvar`, `titleIntSettings` | `game/title/enhancements.*` | The title's `pc_enh` knobs and its settings-menu row (`docs/config.md`) |
 | measured addresses | `game/facts/title_facts.h` | Guest addresses the title's own code reads; evidence in `docs/re-frontier.md` |
 | executable identity | `game/facts/executable_identity.h.in` | Generated from `title.json` |
-| launcher | `tools/launcher.py`, `tools/config.py`, `tools/title_identity.py` | Disc resolution, extraction and authentication for the zero-argument launch |
-| framework fetch | `tools/launcher.py:ensure_framework` | The `external/psxport` fetch (psxport `tools/psxport_fetch.py`) |
+| launcher | `bootstrap.py`, `tools/run.py`, `tools/config.py`, `tools/title_identity.py` | The `external/psxport` fetch, disc resolution, extraction, authentication and build for the zero-argument launch, on psxport `tools/port/launcher.py` |
 | replays | `replays/first-mission/` | Boot to the first mission and a run right then left (`PSXPORT_PAD_REPLAY`) |
 
 ## Where new work goes
