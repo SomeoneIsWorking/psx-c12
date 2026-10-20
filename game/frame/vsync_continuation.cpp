@@ -9,7 +9,7 @@ namespace c12 {
 
 bool resumeVsyncContinuation(Core &core, std::uint32_t boundaryPc) {
   const std::uint32_t continuation = core.r[31];
-  if ((continuation & 3u) != 0 || !core.currentImageIdentity(continuation)) {
+  if ((continuation & 3u) != 0 || !core.imageCatalog().resolve(continuation)) {
     lucent::error("c12.fields",
                   "VSync left an unaligned or unauthenticated continuation 0x{:08x} (boundary PC 0x{:08x})",
                   continuation,
