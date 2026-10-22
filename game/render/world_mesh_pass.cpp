@@ -345,7 +345,7 @@ Step WorldMeshPass::projectPolygon() {
     core_.gte().writeData(psx::gte::kVxy0, work_[3].model);
     core_.gte().writeData(psx::gte::kVz0, work_[3].depthUv);
     const std::int32_t firstArea = static_cast<std::int32_t>(core_.gte().readData(psx::gte::kMac0));
-    setScratch(kSlotFirstScreen, core_.gte().readData(psx::gte::kSxy0));
+    setScratch(kSlotFirstScreen, core_.gte().projected(0).word());
     core_.gte().execute(psx::gte::kRtps);
     core_.gte().execute(psx::gte::kNclip);
     const std::int32_t secondArea = static_cast<std::int32_t>(core_.gte().readData(psx::gte::kMac0));
@@ -421,9 +421,9 @@ Step WorldMeshPass::rejectByDepth() {
 
 Step WorldMeshPass::rejectByScreen() {
   std::array<ScreenVertex, 4> vertices{};
-  const std::array<std::uint32_t, 3> projected = {core_.gte().readData(psx::gte::kSxy0),
-                                                  core_.gte().readData(psx::gte::kSxy1),
-                                                  core_.gte().readData(psx::gte::kSxy2)};
+  const std::array<std::uint32_t, 3> projected = {core_.gte().projected(0).word(),
+                                                  core_.gte().projected(1).word(),
+                                                  core_.gte().projected(2).word()};
   std::size_t count = 0;
   for (const std::uint32_t xy : projected) {
     vertices[count++] = {static_cast<std::int16_t>(sx(xy)), static_cast<std::int16_t>(sy(xy))};
@@ -482,16 +482,16 @@ void WorldMeshPass::prepareAttributes() {
   const std::uint32_t first = scratch(kSlotFirstScreen);
   if (quad_) {
     screen_ = {first,
-               core_.gte().readData(psx::gte::kSxy0),
-               core_.gte().readData(psx::gte::kSxy1),
-               core_.gte().readData(psx::gte::kSxy2)};
+               core_.gte().projected(0).word(),
+               core_.gte().projected(1).word(),
+               core_.gte().projected(2).word()};
     for (std::uint32_t i = 0; i < 4; ++i) {
       setScratch(kSlotDepths + 4 * i, core_.gte().readData(psx::gte::kSz0 + i));
     }
   } else {
-    screen_ = {core_.gte().readData(psx::gte::kSxy0),
-               core_.gte().readData(psx::gte::kSxy1),
-               core_.gte().readData(psx::gte::kSxy2),
+    screen_ = {core_.gte().projected(0).word(),
+               core_.gte().projected(1).word(),
+               core_.gte().projected(2).word(),
                0};
     for (std::uint32_t i = 0; i < 3; ++i) {
       setScratch(kSlotDepths + 4 * i, core_.gte().readData(psx::gte::kSz1 + i));
@@ -653,7 +653,7 @@ std::uint16_t WorldMeshPass::buildSubdivisionVertex(std::uint32_t index, std::ui
     const std::int32_t sx0 = (static_cast<std::int16_t>(a.screen) + static_cast<std::int16_t>(b.screen)) >> 1;
     const std::int32_t sy0 =
         (static_cast<std::int16_t>(a.screen >> 16) + static_cast<std::int16_t>(b.screen >> 16)) >> 1;
-    const std::uint32_t projected = core_.gte().readData(psx::gte::kSxy2);
+    const std::uint32_t projected = core_.gte().projected(2).word();
     core_.gte().writeData(psx::gte::kIr0, static_cast<std::uint32_t>(area_));
     core_.gte().writeData(psx::gte::kIr1, static_cast<std::uint32_t>(sx0));
     core_.gte().writeData(psx::gte::kIr2, static_cast<std::uint32_t>(sy0));
@@ -668,7 +668,7 @@ std::uint16_t WorldMeshPass::buildSubdivisionVertex(std::uint32_t index, std::ui
     WorkVertex &stored = work_[index];
     stored.model = core_.gte().readData(psx::gte::kVxy0);
     stored.depthUv = (core_.gte().readData(psx::gte::kVz0) & 0xFFFFu) | (static_cast<std::uint32_t>(uv) << 16);
-    stored.screen = core_.gte().readData(psx::gte::kSxy2);
+    stored.screen = core_.gte().projected(2).word();
     stored.color = color;
   }
   vertex.color = color;
@@ -680,7 +680,7 @@ void WorldMeshPass::writeSubdivisionSlots(std::uint32_t slotPtr, const WorkVerte
   const auto write = [this, color, uv](std::uint32_t offset) {
     const std::uint32_t at = packet_ + offset;
     core_.mem_w32(at, color);
-    core_.mem_w32(at + 4, core_.gte().readData(psx::gte::kSxy2));
+    core_.mem_w32(at + 4, core_.gte().projected(2).word());
     core_.mem_w16(at + 8, uv);
   };
   const std::uint32_t first = core_.mem_r32(slotPtr);
