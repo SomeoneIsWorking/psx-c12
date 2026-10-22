@@ -405,7 +405,7 @@ std::uint32_t CellCollector::projectFourth(std::uint16_t y, const Box &box) {
   core_.gte().writeData(psx::gte::kVxy0, pack(halfword(box.x1), y));
   core_.gte().writeData(psx::gte::kVz0, halfword(box.z0));
   core_.gte().execute(psx::gte::kRtps);
-  return core_.gte().readData(psx::gte::kSxy2);
+  return core_.gte().projected(2).word();
 }
 
 bool CellCollector::boxVisible(std::uint32_t record, const Box &box) {
@@ -436,8 +436,8 @@ bool CellCollector::pitchedBoxVisible(std::uint32_t record, const Box &box) {
   }
   const std::uint16_t relative = halfword(y - camY_);
   projectBox(relative, box);
-  const std::uint32_t outside = core_.gte().readData(psx::gte::kSxy0) & core_.gte().readData(psx::gte::kSxy1) &
-                                core_.gte().readData(psx::gte::kSxy2) & kOutsideWindow;
+  const std::uint32_t outside = core_.gte().projected(0).word() & core_.gte().projected(1).word() &
+                                core_.gte().projected(2).word() & kOutsideWindow;
   if (outside == 0) {
     return true;
   }
@@ -451,18 +451,18 @@ bool CellCollector::levelBoxVisible(std::uint32_t record, const Box &box) {
     return true;
   }
   projectBox(halfword(top), box);
-  const std::uint32_t topA = core_.gte().readData(psx::gte::kSxy0);
-  const std::uint32_t topB = core_.gte().readData(psx::gte::kSxy1);
-  const std::uint32_t topC = core_.gte().readData(psx::gte::kSxy2);
+  const std::uint32_t topA = core_.gte().projected(0).word();
+  const std::uint32_t topB = core_.gte().projected(1).word();
+  const std::uint32_t topC = core_.gte().projected(2).word();
   const std::uint32_t topD = projectFourth(halfword(top), box);
   const std::uint32_t topAnd = topA & topB & topC & topD;
   if ((topAnd & kOutsideWindow) == 0) {
     return true;
   }
   projectBox(halfword(bottom), box);
-  const std::uint32_t bottomA = core_.gte().readData(psx::gte::kSxy0);
-  const std::uint32_t bottomB = core_.gte().readData(psx::gte::kSxy1);
-  const std::uint32_t bottomC = core_.gte().readData(psx::gte::kSxy2);
+  const std::uint32_t bottomA = core_.gte().projected(0).word();
+  const std::uint32_t bottomB = core_.gte().projected(1).word();
+  const std::uint32_t bottomC = core_.gte().projected(2).word();
   const std::uint32_t bottomD = projectFourth(halfword(bottom), box);
   const std::uint32_t shared = topAnd & bottomA & bottomB & bottomC & bottomD;
   const std::uint32_t every = topA | topB | topC | topD | bottomA | bottomB | bottomC | bottomD;
