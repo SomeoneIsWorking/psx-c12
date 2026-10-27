@@ -40,9 +40,9 @@ Two causes:
 1. psxport `StockLibcd::applyCommand` ran the Pause that precedes a ReadN through the controller
    (`retirePendingCommand`) without latching the interrupt edge it raised. The guest spinning in CdReady never reads
    I_STAT, so the INT3/INT2 and the first sector's INT1 waited for the field end. Every new file read lost the rest of
-   a field (`scratch/player-bugs-3/cdwait3/run.log`: `dataready head=2 tail=5 ... edge=1` with no IRQ2 until the
+   a field (`scratch/player-bugs-3/cdwait3/excerpt.log`: `dataready head=2 tail=5 ... edge=1` with no IRQ2 until the
    field ended). Fixed: `applyCommand` latches as a guest controller write does; sectors now arrive one per drive
-   period inside the field (`cdwait5/run.log`), and budget-ended fields fall from 94 to 89.
+   period inside the field (`cdwait5/excerpt.log`), and budget-ended fields fall from 94 to 89.
 2. What remains is the cost of the wait itself. All guest RAM accesses go through Lightrec memory callbacks, and every
    store also requests an invalidation, so a field of CdReady spin costs 25-40 ms (psxport issue 0185).
 
