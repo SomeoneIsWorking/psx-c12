@@ -61,6 +61,9 @@ No further static product generation, build, or run is part of this chain.
   refusal was about — the probe never committed a fence, so every field's prims accumulated.
   1,420 presented fields, 1,326 VSync boundaries, 0 fallback, 0 faults, with the loopback control
   channel answering `shot`/`r`/`w32` against the live Core.
+  Since 2026-10-28 libcd CdRead `0x800AF9D4` (sectors, buf, mode; callers `FUN_800abce4`, `FUN_8009cfd0`,
+  `FUN_800ac358`) and CdReadSync `0x800AFB70` (callers `FUN_800abce4`, `FUN_8009d06c`, `FUN_800ac3d0`) are bound
+  stock, so reads land when issued (issue 0006).
 - where: `external/psxport` (`cd_ready_delivery.*`, `cdc_native.cpp`, `cd_override.cpp`,
   `guest_code_module.*`, `guest_packet_pool_windows.*`), `game/facts/title_facts.h`,
   `game/frame/frame_driver.*`, `game/entry/catalog.cpp`

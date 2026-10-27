@@ -1,7 +1,7 @@
 # 0006 — Boot presents miss one vsync in eight on a quiet host
 
-Status: attributed, open (2026-10-28). Owner: psxport `runtime/cpu/lightrec_executor.cpp` (RAM memory map,
-psxport issue 0185); the per-field budget is `game/frame/frame_driver.h` `kCyclesPerTurn`.
+Status: fixed (2026-10-28). Owner: `game/runtime/runtime.cpp` (the stock libcd binding); facts in
+`game/facts/title_facts.h`.
 
 ## Observed
 40 s paced, hidden run from boot (`psxport/scratch/player-bugs/realtime_all.py`, host load 4.8, every other title at
@@ -47,6 +47,24 @@ Two causes:
    store also requests an invalidation, so a field of CdReady spin costs 25-40 ms (psxport issue 0185).
 
 A 40 s paced run after fix 1 missed 45 of 2310 (1.95%, p99 34.5 ms, longest run 3, load 5.1;
-`scratch/player-bugs-3/rt2/run.log`); 46 (1.99%, load 5.4) before. The proper fix is 0185: direct-mapped RAM. The
-title-side alternative is loading removal: serve the boot loader's sector reads synchronously, as the instant-CD
-design asks, so the guest never spins in CdReady. Either one removes the spin cost; neither is done here.
+`scratch/player-bugs-3/rt2/run.log`); 46 (1.99%, load 5.4) before. That difference is inside the run-to-run spread
+above, so fix 1 alone has no shown effect on what the player sees.
+
+## Fixed, 2026-10-28
+The loader's blocking read `FUN_800abce4` is CdIntToPos, CdControlB(Setloc), CdRead `FUN_800af9d4`(sectors, buf,
+0x80) and CdReadSync `FUN_800afb70`(0, 0); the streamer (`FUN_8009cfd0`/`FUN_8009d06c`, `FUN_800ac358`/`FUN_800ac3d0`)
+issues the same CdRead and polls CdReadSync(1). Both entries are now bound as psxport's stock `CdRead`/`CdReadSync`,
+the instant-CD design: a read lands whole when issued and CdReadSync finds nothing left, so no load waits in CdReady.
+The loader's `RELOCS/GT.LVB` lands in the module window through psxport's `announceStockReadLanding`, which now
+activates the window as a DMA3 landing does.
+
+Shown, hidden runs on the product (ires 0, fps60 1, 3840x2160 sink):
+- 40 s paced from boot: `presents: intervals=2361 p50=16.75ms p99=17.00ms worst=22.85ms missed=0 (0.00%)`, load 4.0
+  (`scratch/player-bugs-3/optb-paced/run.log`); 45-46 missed before.
+- Unpaced from boot: the title's PRESS START BUTTON screen at 25 s and 50 s, the code module activated at its first
+  landing, no fault (`optb-unpaced2/`).
+- Start, X, X, X, Start: the menu, the story page, the briefing, the first mission street with the HEALTH bar, and the
+  pause menu (`optb-newgame/strip.png`). The same route without the binding logs the same Setloc error at the
+  briefing skip (`base-newgame/run.log`), recorded as issue 0007.
+
+The CdReady spin cost (psxport 0185) is no longer paid at boot; 0185 stays open for the framework.

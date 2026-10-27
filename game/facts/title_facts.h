@@ -15,6 +15,10 @@ inline constexpr std::uint32_t kVSyncQueryCounterAddress = 0x800EEB98u;
 inline constexpr std::uint32_t kCdCommandAddress = 0x800B4CA8u;
 inline constexpr std::uint32_t kCdReadySyncAddress = 0x800ABD98u;
 
+// libcd CdRead(sectors, buf, mode) and CdReadSync(mode, result); the loader FUN_800abce4 blocks on both.
+inline constexpr std::uint32_t kCdReadAddress = 0x800AF9D4u;
+inline constexpr std::uint32_t kCdReadSyncAddress = 0x800AFB70u;
+
 // libcd work area written by CdLastPos: position, then mode.
 inline constexpr std::uint32_t kCdLastPositionAddress = 0x800EEED0u;
 inline constexpr std::uint32_t kCdLastModeAddress = 0x800EEED4u;
