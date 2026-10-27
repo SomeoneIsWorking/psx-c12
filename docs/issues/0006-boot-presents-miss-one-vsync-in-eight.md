@@ -1,6 +1,7 @@
 # 0006 — Boot presents miss one vsync in eight on a quiet host
 
-Status: open (2026-10-27). Owner: not yet attributed.
+Status: attributed, open (2026-10-28). Owner: psxport `runtime/cpu/lightrec_executor.cpp` (RAM memory map,
+psxport issue 0185); the per-field budget is `game/frame/frame_driver.h` `kCyclesPerTurn`.
 
 ## Observed
 40 s paced, hidden run from boot (`psxport/scratch/player-bugs/realtime_all.py`, host load 4.8, every other title at
@@ -21,13 +22,31 @@ attributes nothing; its top entries are `lightrec_rw` 6.0%, `NativeDispatcher::c
 `LightrecExecutor::blockBoundary` 5.3%, `OwnerLedger::port` 5.3%, `notifyExecutableWrite` 2.6% and
 `lightrec_invalidate_blocks` 1.7%, besides the disc's LZMA decode at open.
 
-## Not yet known
-Which owner the late fields spend their time in: the profile is not tied to the 25 ms / 34-42 ms rhythm. Which guest
-routine the boot's slow fields run (stores into code pages that force invalidations, or a dispatch-heavy
-loop), and whether the 300-499 misses are the same. Next: per-field host-dispatch and invalidation counts against the
-guest PC over fences 1-100. A review re-run on the same build missed 36 (1.56%, longest run 2, load 4.0).
-
 On the psxport working tree with the timed SPU (psxport issue 0183) two 40 s paced hidden runs missed 89 (3.98%, longest
 run 13, load 3.5; `scratch/player-bugs-2/realtime40-3`) and 59 (2.57%, longest run 3, load 5.0; `rt-c12-a`). A
 6 s boot profile (`c12-perf/perf.data`) puts `SPU_UpdateFromCDC` at 0.74%, so the SPU running to guest time at its
 accesses is not the cost; the spread between runs at the same load is as large as the change.
+
+## Attributed, 2026-10-28
+Per-field counters on fences 1-500 (unpaced, `scratch/player-bugs-3/pages/run.log`): every slow field (f1-f94 and
+f396-f409) ends on the 4M-cycle budget (`kCyclesPerTurn`) rather than at a VSync. Each runs about 2.0M guest
+instructions in 25-46 ms, with about 45k host dispatches, 594k Lightrec memory callbacks and 273k CPU-store
+invalidation requests (227k to the stack page `0x801FF000`, 45k to `0x80105000`), and 0 Lightrec blocks invalidated.
+The guest is in libcd's CdReady wait, `FUN_800b49e0` (polling VSync(-1) `FUN_800a1758`, timeout counter
+`0x801057AC`), while the boot loader reads its files one 2x-speed sector at a time (225,792 ticks each,
+`cdcpace`). Fields that reach a VSync cost 2-3 ms.
+
+Two causes:
+1. psxport `StockLibcd::applyCommand` ran the Pause that precedes a ReadN through the controller
+   (`retirePendingCommand`) without latching the interrupt edge it raised. The guest spinning in CdReady never reads
+   I_STAT, so the INT3/INT2 and the first sector's INT1 waited for the field end. Every new file read lost the rest of
+   a field (`scratch/player-bugs-3/cdwait3/run.log`: `dataready head=2 tail=5 ... edge=1` with no IRQ2 until the
+   field ended). Fixed: `applyCommand` latches as a guest controller write does; sectors now arrive one per drive
+   period inside the field (`cdwait5/run.log`), and budget-ended fields fall from 94 to 89.
+2. What remains is the cost of the wait itself. All guest RAM accesses go through Lightrec memory callbacks, and every
+   store also requests an invalidation, so a field of CdReady spin costs 25-40 ms (psxport issue 0185).
+
+A 40 s paced run after fix 1 missed 45 of 2310 (1.95%, p99 34.5 ms, longest run 3, load 5.1;
+`scratch/player-bugs-3/rt2/run.log`); 46 (1.99%, load 5.4) before. The proper fix is 0185: direct-mapped RAM. The
+title-side alternative is loading removal: serve the boot loader's sector reads synchronously, as the instant-CD
+design asks, so the guest never spins in CdReady. Either one removes the spin cost; neither is done here.
