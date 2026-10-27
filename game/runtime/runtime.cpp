@@ -16,10 +16,11 @@
 
 namespace c12 {
 
-// Only CD_cw is stock; CdReadySync is the title's own completion owner (cd_command_completion).
+// CdRead lands at once and CdReadSync finds nothing left, so no load waits in CdReady; CdReadySync is the
+// title's own completion owner (cd_command_completion).
 Runtime::Runtime()
     : vsync_({.entry = kVSyncAddress, .queryCounter = kVSyncQueryCounterAddress}),
-      libcd_({.command = kCdCommandAddress},
+      libcd_({.read = kCdReadAddress, .readSync = kCdReadSyncAddress, .command = kCdCommandAddress},
              {.lastPositionAddress = kCdLastPositionAddress, .lastModeAddress = kCdLastModeAddress},
              kCdReadyCallbackSlotAddress,
              {.status = kCdReadyStatus}) {
