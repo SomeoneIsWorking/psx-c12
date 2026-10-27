@@ -26,3 +26,8 @@ Which owner the late fields spend their time in: the profile is not tied to the 
 routine the boot's slow fields run (stores into code pages that force invalidations, or a dispatch-heavy
 loop), and whether the 300-499 misses are the same. Next: per-field host-dispatch and invalidation counts against the
 guest PC over fences 1-100. A review re-run on the same build missed 36 (1.56%, longest run 2, load 4.0).
+
+On the psxport working tree with the timed SPU (psxport issue 0183) two 40 s paced hidden runs missed 89 (3.98%, longest
+run 13, load 3.5; `scratch/player-bugs-2/realtime40-3`) and 59 (2.57%, longest run 3, load 5.0; `rt-c12-a`). A
+6 s boot profile (`c12-perf/perf.data`) puts `SPU_UpdateFromCDC` at 0.74%, so the SPU running to guest time at its
+accesses is not the cost; the spread between runs at the same load is as large as the change.
