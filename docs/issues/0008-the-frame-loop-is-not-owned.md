@@ -27,8 +27,14 @@ Shown on `replays/first-mission/menu-to-mission-run-right-left.pad`, 6000 steps 
 | before | 6000 × 1/1 | 48 (loads: steps 1, 9–23, 761–804, 1392) | `d8aaca09 00d57ecb 1f210377 ea059f5e 621f5f13 4068bc09` |
 | after | 5909 × 2/1, 91 × 1/1 | 0 | identical |
 
-Guest RAM hashes match up to step 1 and differ from step 2 on: the VBlank counter and every clock-driven timer now
-advance two fields per logic frame.
+Guest RAM hashes match up to step 1 and differ from step 2 on. That first pass delivered one guest VBlank per step,
+not per field: `Timing::advanceDisplayFields` latched IRQ0 once per commit, so the VBlank handler (element `0x800EEDA0`,
+handler `0x800B1188`) ran once per two-field step and the loop's VBlank counter `gp+0xCB4` (`0x800F08C4`) moved one per
+step while the clock moved two fields (psxport `scratch/dispatch-cost/review-c12-vcount`: `0x192` at step 403, `0x25A`
+at 603). psxport now delivers each field's VBlank before latching the next. Same replay, 700 steps unpaced
+(`scratch/dispatch-cost/fix-c12-vcount`): the counter reads `0x304` at step 403 and `0x496` at 604, 402 VBlanks, and
+the digest boundaries between those steps span 402.0 fields. Boot, 600 steps with `PSXPORT_DEBUG=irq`: 1167 IRQ0
+raises, 1165 handler deliveries.
 
 ## Left
 - The loop body still runs as guest code from its own PC; the driver owns the cadence at the replaced wait, not the
