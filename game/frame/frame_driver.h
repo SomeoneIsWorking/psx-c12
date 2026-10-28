@@ -11,12 +11,10 @@ class Game;
 
 namespace c12 {
 
-// One step is one display field: the logic-frame start (clock, producer census, pad), one bounded guest turn, the VSync
+// One step is one display field: the logic-frame start (clock, producer census, pad), one field-long guest turn, the VSync
 // continuation, one presentation commit, then audio.
 class FrameDriver final : public psx::game::FrameDriver {
 public:
-  static constexpr std::uint64_t kCyclesPerTurn = 4'000'000;
-
   explicit FrameDriver(Game &game);
 
   void stepFrame(Core &core, std::uint32_t frame) override;

@@ -20,7 +20,7 @@ void FrameDriver::stepFrame(Core &core, std::uint32_t frame) {
   psx::frame::LogicFrame::begin(game_, frame);
 
   auto &executor = core.lightrecExecutor();
-  const auto result = executor.executeUntilExit(core.pc, psx::cpu::ExecutionBudget::fromCycles(kCyclesPerTurn));
+  const auto result = executor.executeUntilExit(core.pc, psx::cpu::ExecutionBudget::currentTurn(core));
   if (result.reason == psx::cpu::ExecutionExitReason::FrameBoundary) {
     ++boundaries_;
     if (!resumeVsyncContinuation(core, result.guestPc)) {

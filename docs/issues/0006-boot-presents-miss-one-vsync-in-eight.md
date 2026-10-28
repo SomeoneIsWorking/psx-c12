@@ -68,3 +68,9 @@ Shown, hidden runs on the product (ires 0, fps60 1, 3840x2160 sink):
   briefing skip (`base-newgame/run.log`), recorded as issue 0007.
 
 The CdReady spin cost (psxport 0185) is no longer paid at boot; 0185 stays open for the framework.
+
+## Turn length, 2026-10-28
+psxport `335ea43a` made a turn budget guest ticks (one per instruction) instead of Lightrec cycles (two), so the fixed
+4M `kCyclesPerTurn` became about 7 fields of guest work before one commit: 2 budget-ended turns and 2 missed presents
+(worst 49-56 ms, `scratch/player-bugs-5/paced40-review`). The driver now takes `ExecutionBudget::currentTurn`, one
+field: 40 s paced, load 0.96, `worst=20.71ms missed=0`, 17 budget-ended turns (`scratch/player-bugs-5/paced40-turn`).

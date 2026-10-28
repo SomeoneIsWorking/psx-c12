@@ -15,7 +15,7 @@ Title hops only. Each row is where C-12 joins a psxport feature hop (`psxport F-
 
 | hop | joins | owner |
 |---|---|---|
-| 1 | psxport F-TURN.2 | `game/frame/frame_driver.cpp:c12::FrameDriver::stepFrame` — logic frame, one turn of `kCyclesPerTurn`, one commit, audio |
+| 1 | psxport F-TURN.2 | `game/frame/frame_driver.cpp:c12::FrameDriver::stepFrame` — logic frame, one turn of `ExecutionBudget::currentTurn` (one field), one commit, audio |
 | 2 | psxport F-TURN.2 | `game/frame/vsync_continuation.cpp:resumeVsyncContinuation` — resumes at `r31` after VSync, or ends the run |
 | 3 | psxport F-TURN.4 | `game/runtime/runtime.cpp:c12::Runtime::reportRun` — fields and VSync boundaries |
 
