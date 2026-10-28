@@ -20,7 +20,9 @@ void FrameDriver::stepFrame(Core &core, std::uint32_t frame) {
   psx::frame::LogicFrame::begin(game_, frame);
 
   auto &executor = core.lightrecExecutor();
-  const auto result = executor.executeUntilExit(core.pc, psx::cpu::ExecutionBudget::currentTurn(core));
+  const auto result = executor.executeUntilExit(core.pc, psx::cpu::ExecutionBudget::untilFieldEdge(core));
+  // The replaced VSync(n) (gameplay loop FUN_80038094 asks for 2) or a turn that ran out without one.
+  const std::uint32_t fields = game_.timing.takeStepFields();
   if (result.reason == psx::cpu::ExecutionExitReason::FrameBoundary) {
     ++boundaries_;
     if (!resumeVsyncContinuation(core, result.guestPc)) {
@@ -36,9 +38,11 @@ void FrameDriver::stepFrame(Core &core, std::uint32_t frame) {
     game_.run.requestEnd();
   }
 
-  game_.presentation.commit(&core, 1);
-  game_.spu_audio.frame();
-  ++fields_;
+  game_.presentation.commit(&core, static_cast<int>(fields));
+  for (std::uint32_t field = 0; field < fields; ++field) {
+    game_.spu_audio.frame();
+  }
+  fields_ += fields;
 }
 
 } // namespace c12

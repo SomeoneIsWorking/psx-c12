@@ -11,8 +11,9 @@ class Game;
 
 namespace c12 {
 
-// One step is one display field: the logic-frame start (clock, producer census, pad), one field-long guest turn, the VSync
-// continuation, one presentation commit, then audio.
+// One step is one logic frame: the logic-frame start (clock, producer census, pad), one guest turn to the next libetc
+// VSync(n) `0x800A1758`, the VSync continuation, one presentation commit of the fields that wait spans
+// (Timing::takeStepFields), then audio per field.
 class FrameDriver final : public psx::game::FrameDriver {
 public:
   explicit FrameDriver(Game &game);
