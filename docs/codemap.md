@@ -3,6 +3,8 @@
 Where C-12's code lives and what each owner owns. Feature chains are in `docs/features.md`; the
 framework side is `external/psxport/docs/codemap.md`.
 
+Frame loop: not owned. Each step runs the guest to its next VSync `0x800A1758` and delivers one field (issue 0008).
+
 ## Owners
 
 | owner | path | owns |
