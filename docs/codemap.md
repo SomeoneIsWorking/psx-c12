@@ -3,7 +3,7 @@
 Where C-12's code lives and what each owner owns. Feature chains are in `docs/features.md`; the
 framework side is `external/psxport/docs/codemap.md`.
 
-Frame loop: not owned. Each step runs the guest to its next VSync `0x800A1758` and delivers one field (issue 0008).
+Frame loop: cadence owned. Each step runs the guest to its next VSync `0x800A1758` and delivers the fields that wait spans (`Timing::takeStepFields`; the gameplay loop `FUN_80038094` asks for 2); the loop body is still guest code (issue 0008).
 
 ## Owners
 
@@ -12,7 +12,7 @@ Frame loop: not owned. Each step runs the guest to its next VSync `0x800A1758` a
 | `createCatalog` | `game/entry/catalog.*` | The one-title catalog: `TitleIdentity` from `title.json` and a `c12::Runtime` |
 | `c12::Runtime` | `game/runtime/runtime.*` | The `GameRuntime`: stock VSync and libcd objects bound in `registerOverrides`, the native overrides, session, frame driver, module window, packet pool, Record path, run report |
 | `c12::Session`, `worldVisibility` | `game/runtime/session.*` | Per-Core title state: the frame's extended cell list |
-| `c12::FrameDriver` | `game/frame/frame_driver.*` | One field: logic frame, one bounded guest turn, one commit, audio |
+| `c12::FrameDriver` | `game/frame/frame_driver.*` | One logic frame: one guest turn to the VSync, one commit of its fields, audio per field |
 | `resumeVsyncContinuation` | `game/frame/vsync_continuation.*` | Resuming at a VSync continuation in `r31`, or refusing it |
 | `completeCdReadySyncCommand` | `game/cd/cd_command_completion.*` | `CdReadySync` (`0x800ABD98`) and the command-status completion it owes |
 | `rebuildViewFrustumCorners` | `game/render/view_frustum.*` | `FUN_800660D8`, widened with the canvas |
