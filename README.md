@@ -5,6 +5,24 @@ The offline translator, generated source corpus, static dispatcher, prior build 
 gameplay executable have been deleted before replacement work. They are not retained as a bridge or
 oracle.
 
+## Screenshots
+
+![Vaughan in the first mission's ruined street at 16:9](docs/media/street.png)
+![Vaughan running past storefronts in the first mission](docs/media/run.png)
+![The mission briefing: the dropship over the city with Col. Grisham's subtitles](docs/media/briefing.png)
+
+![The same frame at the original 4:3 and at 16:9, which shows more of the street](docs/media/widescreen-comparison.png)
+
+Widescreen: the same frame at 4:3 and at 16:9; the wider view draws more of the street, not a stretch.
+
+![The same frame at the retail draw distance and at the default +50%](docs/media/draw-distance-comparison.png)
+
+Draw distance: the default +50% draws the far end of the street (top left) that retail leaves black.
+
+![Running right through the first mission at 16:9](docs/media/gameplay.webp)
+
+Gameplay at 16:9 and the game's own 30 fps; 60 fps interpolation is not built yet ([issue 0009](docs/issues/0009-no-60-fps-interpolation.md)).
+
 The product `c12_port` is psxport's framework `main` over C-12's one-title catalog
 (`game/entry/catalog.cpp`): `ProductHost` authenticates the executable, `TitleSession` boots it,
 and `c12::FrameDriver` owns one display field per step and presents the guest's own picture.
