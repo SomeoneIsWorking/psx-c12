@@ -1,7 +1,7 @@
 # 0010 — A save point stays on "Accessing MEMORY CARD - please wait"
 
-Status: open (2026-11-03), cause not yet named. Owner: between psxport's card HLE (`runtime/psx/platform/memcard.cpp`)
-and the title's libmcrd caller.
+Status: fixed (2026-11-03). Owner: psxport `runtime/psx/host/title_session.cpp:bindPerCoreDevices` (the BIOS
+device table), `runtime/psx/platform/memcard.cpp:Memcard::install`.
 
 ## Observed
 Player report `20261031-180552-game-stuck-here`, pad frame 7791: at a save point the game shows "Accessing MEMORY CARD -
@@ -9,7 +9,7 @@ please wait" and never leaves it.
 
 ## Reproduction
 The report's `repro.pad` on a copy of its card, hidden, unpaced, reaches the same screen at 7791
-(psx-spyro `scratch/depth/runs/c12-stuck/cmp.png`, left ours, right the report's) and is still there 400 frames later.
+(`scratch/depth/runs/c12-stuck/cmp.png`, left ours, right the report's) and is still there 400 frames later.
 
 ## Trace so far
 `PSXPORT_DEBUG=card`: the only card calls are `_card_info` (A0:0xAB) twice, `_new_card` (B0:0x50), the probe
@@ -17,11 +17,26 @@ The report's `repro.pad` on a copy of its card, hidden, unpaced, reaches the sam
 EvSpIOE. No `open`/`firstfile` follows. In the binary this is libmcrd's MemCardAccept (`FUN_800ac964`, card check
 `FUN_800ac5e0`): `_card_info` finds IOE on a card whose bit in `0x801056A8` is clear, so it reports a new card (status 3);
 Accept then runs `_new_card`, the probe write and `_card_load`, and the four SwCARD callbacks (`0x800B60D0..0x800B610C`,
-flags `0x80105834..40`) return IOE. `dumpram` at frames 7900 and 8200 (psx-spyro `scratch/depth/runs/c12-ram/run.log`; script `scratch/depth/c12ram.txt`) shows libmcrd idle:
+flags `0x80105834..40`) return IOE. `dumpram` at frames 7900 and 8200 (`scratch/depth/runs/c12-ram/run.log`; script `scratch/depth/c12ram.txt`) shows libmcrd idle:
 task depth `0x800EF1E0` = -1, status `0x801056A0` = 0, all eight callback flags 0. So libmcrd finished and the wait is
 in the caller, which has not been located yet.
 
-## Next
-Find the save-point caller of MemCardAccept/MemCardSync (refs to `0x801056A0` beyond libmcrd, the `"Accessing MEMORY
-CARD"` string) and what it waits for after a new-card Accept; compare with what retail's `_card_load` does to the
-card's "new" state.
+## Cause
+The PC was in libmcrd's HwCARD wait `FUN_800b65e0` (ra 0x800AD608 in MemCardGetDirentry `FUN_800ad518`), which spins
+until one of the HwCARD flags `0x80105844..50` is set. GetDirentry calls the libapi firstfile wrapper `FUN_800b67e0`,
+which walks the kernel device table (`*0x150`, length `*0x154`) for "bu" and only then calls B0:0x42. Both words were 0:
+the framework never published the "bu" device for C-12 (only Tomba and Crash Bash called `Memcard::install`), so the
+wrapper returned 0 without a BIOS call, no HwCARD event fired, and the wait never ended. The retail kernel boots with
+"bu" installed.
+
+## Fix
+`TitleSession` publishes "bu" for every title at boot (`bindPerCoreDevices` calls `Memcard::install`, which now only
+adds the device; the card file still opens on first use).
+
+## Shown
+Same replay and card, unpaced: at 7791 the save point shows "MEMORY CARD SLOT 1 / SELECT SAVE BLOCK" with 15 empty
+blocks and stays there responsive through 8691 (`scratch/depth/runs/c12-fix/sheet.png`); the card log shows
+`firstfile 'bu00:*'` and `'bu10:*'` reached (`c12-fix/run.log`).
+
+## Remaining
+Tomba's and Crash Bash's own `game.memcard.install()` calls are now redundant and belong removed in those repos.
