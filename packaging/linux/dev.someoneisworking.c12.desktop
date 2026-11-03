@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=C-12: Final Resistance
+GenericName=Action game
+Comment=PC-native port of C-12: Final Resistance
+Icon=dev.someoneisworking.c12
+Terminal=false
+Categories=Game;ActionGame;
+Keywords=C-12;PlayStation;Port;
+StartupNotify=true

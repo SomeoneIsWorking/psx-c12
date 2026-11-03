@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title description">
+  <title id="title">C-12: Final Resistance port icon</title>
+  <desc id="description">A pale alien eye with a vertical slit pupil over a dark green hex backdrop.</desc>
+  <defs>
+    <linearGradient id="backdrop" x1="64" y1="32" x2="448" y2="480" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#16382c"/>
+      <stop offset="1" stop-color="#04120d"/>
+    </linearGradient>
+    <radialGradient id="iris" cx="46%" cy="40%" r="66%">
+      <stop offset="0" stop-color="#a9ffd0"/>
+      <stop offset=".55" stop-color="#37b478"/>
+      <stop offset="1" stop-color="#0d5c3a"/>
+    </radialGradient>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity=".42"/>
+    </filter>
+  </defs>
+
+  <rect x="20" y="20" width="472" height="472" rx="106" fill="url(#backdrop)"/>
+  <rect x="35" y="35" width="442" height="442" rx="91" fill="none" stroke="#6fe0a8" stroke-width="6" opacity=".75"/>
+
+  <g filter="url(#shadow)">
+    <path d="M112 256c58-80 230-80 288 0-58 80-230 80-288 0Z" fill="#e6fff2" stroke="#06231a" stroke-width="12"/>
+    <circle cx="256" cy="256" r="70" fill="url(#iris)" stroke="#06231a" stroke-width="10"/>
+    <ellipse cx="256" cy="256" rx="16" ry="52" fill="#020b08"/>
+    <circle cx="230" cy="226" r="12" fill="#fff" opacity=".85"/>
+  </g>
+
+  <g fill="#6fe0a8" opacity=".85">
+    <rect x="96" y="356" width="20" height="20" rx="4"/>
+    <rect x="396" y="356" width="20" height="20" rx="4"/>
+    <rect x="126" y="392" width="12" height="12" rx="3"/>
+    <rect x="374" y="392" width="12" height="12" rx="3"/>
+  </g>
+
+  <g fill="#fff" opacity=".9">
+    <circle cx="91" cy="91" r="7"/>
+    <circle cx="421" cy="101" r="5"/>
+    <circle cx="105" cy="420" r="5"/>
+    <circle cx="421" cy="421" r="7"/>
+  </g>
+</svg>
