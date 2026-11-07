@@ -69,3 +69,5 @@ guest's own registered ready callback, the title loads and executes its disc-res
 primitives. `c12_frame_driver` proves the field step over synthetic guests with no game files.
 First boot execution alone is not gameplay conformance. Intended enhancements and platform releases
 are listed separately in [project state](docs/project-state.md).
+
+Built with AI assistance (Claude and other LLMs).
