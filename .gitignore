@@ -5,3 +5,6 @@ build/
 scratch/
 external/
 *.chd
+
+# long-lived ignored inputs and derived assets (Ghidra projects, decompiled output)
+env-assets/
