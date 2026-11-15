@@ -79,3 +79,27 @@ Constraints and non-goals: fallback-dominated runs, cross-compilation alone, and
 do not qualify platform support or a release.
 
 Contributing state items: S007, S012-S021.
+
+## G004 — Right-stick camera
+
+The right analog stick turns the camera freely around Vaughan.
+
+Why it matters: a modern pad expects the right stick to move the camera, and the original gives it
+no such role.
+
+Success conditions:
+
+- Right stick left/right orbits the camera around the player at a rate proportional to the
+  deflection; up/down raises and lowers it within the bounds the game's own camera keeps.
+- Release leaves the camera where the player put it until the game's own follow logic takes it back.
+  The original controls keep working.
+- It drives the game's own camera inputs, found by RE, so collision, aiming, cuts and 60 fps
+  interpolation follow on their own, and it works the same at 16:9 and 21:9.
+- It is a saved setting, on by default, off under oracle comparison.
+
+Constraints and non-goals:
+
+- The stick is read through the port's pad owner; nothing writes host input into guest pad words.
+- No detached debug free-fly camera; cutscenes and scripted shots stay as authored.
+
+Related state: none yet.
