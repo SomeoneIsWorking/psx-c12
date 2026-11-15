@@ -42,6 +42,32 @@ inline constexpr psx::gpu::GuestPacketPoolWindows kPacketPoolWindows{
     .end = kPacketPoolHigh,
 };
 
+// The gameplay loop's draw section Game_Draw(mode) and its mode word (0 in play, 1 in the pause view).
+inline constexpr std::uint32_t kDrawSectionAddress = 0x80038440u;
+inline constexpr std::uint32_t kGameModeAddress = 0x800F1B4Cu;
+// A camera record (the list at gp+0xC90; the main one at gp+0x9E4): its ordering table length (u16), its two tables
+// by buffer parity and the one being built, which Gfx_SwapAndSubmit sets after the VSync.
+inline constexpr std::uint32_t kCameraTableLength = 0x6Cu;
+inline constexpr std::uint32_t kCameraBuildTable = 0x7Cu;
+// Its source transform: a MATRIX of the camera's world rotation and position, which Camera_BuildMatrices makes the
+// view.
+inline constexpr std::uint32_t kCameraSourceTransform = 0x80u;
+// The object list: a head word, records linked by +4 up to the sentinel, each with its class (draw method at
+// class + 0x84) and its world MATRIX.
+inline constexpr std::uint32_t kObjectListHead = 0x800F1100u;
+inline constexpr std::uint32_t kObjectListSentinel = 0x800F10FCu;
+inline constexpr std::uint32_t kObjectNext = 0x4u;
+inline constexpr std::uint32_t kObjectClass = 0xCu;
+inline constexpr std::uint32_t kObjectTransform = 0x14u;
+// A skinned object's skeleton slot (the skeleton's address), its joint count (u16) and its joints, kJointStride
+// bytes apart (Skeleton_Translate); each joint's animation clock (a pointer to its time word) and track (Anim_Sample).
+inline constexpr std::uint32_t kObjectSkeleton = 0x88u;
+inline constexpr std::uint32_t kSkeletonJointCount = 0x1Eu;
+inline constexpr std::uint32_t kSkeletonJoints = 0x24u;
+inline constexpr std::uint32_t kJointStride = 0x70u;
+inline constexpr std::uint32_t kJointClock = 0x4u;
+inline constexpr std::uint32_t kJointTrack = 0x8u;
+
 // World view frustum corner builder, its table (four 8-byte s16 x, y, z entries) and the zone words it reads.
 inline constexpr std::uint32_t kViewFrustumBuilderAddress = 0x800660D8u;
 inline constexpr std::uint32_t kViewFrustumCornerTableAddress = 0x800F9378u;

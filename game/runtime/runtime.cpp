@@ -33,6 +33,11 @@ void Runtime::registerOverrides(Game &game) {
   installViewFrustumOverride(game);
   installCellCollectorOverride(game);
   installWorldMeshPassOverride(game);
+  DrawReplay::registerOverrides(game);
+}
+
+psx::present::ReplayFrame *Runtime::replayFrame(Core &core) {
+  return &drawReplay(core).frame();
 }
 
 std::unique_ptr<psx::game::TitleSessionState> Runtime::createSession(Game &) {

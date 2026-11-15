@@ -38,6 +38,11 @@ if(C12_BUILD_RUNTIME)
     game/render/fog_table.cpp
     game/render/view_frustum.cpp
     game/render/world_mesh_pass.cpp
+    game/replay/camera_motion.cpp
+    game/replay/draw_replay.cpp
+    game/replay/draw_section.cpp
+    game/replay/matrix_sample.cpp
+    game/replay/object_motion.cpp
     game/runtime/runtime.cpp
     game/runtime/session.cpp
     game/title/enhancements.cpp

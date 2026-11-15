@@ -19,6 +19,10 @@ public:
   std::optional<psx::gpu::PacketPoolExtent> packetPool(Core &core) const override;
   const psx::present::GuestWidescreenProjection *guestWidescreenProjection() const override;
   void reportRun(Core &core) const override;
+  bool interpolates() const override {
+    return true;
+  }
+  psx::present::ReplayFrame *replayFrame(Core &core) override;
   std::span<const psx::game::TitleIntSetting> titleIntSettings() const override;
   // No debug route reaches a C-12 screen yet.
   const psx::game::TitleDebugMenu &debugMenu() const override {
