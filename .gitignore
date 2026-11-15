@@ -3,7 +3,7 @@
 __pycache__/
 build/
 scratch/
-external/
+/external/psxport
 *.chd
 
 # long-lived ignored inputs and derived assets (Ghidra projects, decompiled output)

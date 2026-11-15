@@ -23,7 +23,7 @@ Frame loop: cadence owned. Each step runs the guest to its next VSync `0x800A175
 | `FogTables` | `game/render/fog_table.*` | The fade tables, stretched by the draw distance scale |
 | `WidescreenPolicy` | `game/widescreen/widescreen_policy.*` | The title's `GuestWidescreenProjection`: 16:9 when the knob is on |
 | `widescreenCvar`, `drawDistanceCvar`, `titleIntSettings` | `game/title/enhancements.*` | The title's `pc_enh` knobs and its settings-menu row (`docs/config.md`) |
-| measured addresses | `game/facts/title_facts.h` | Guest addresses the title's own code reads; evidence in `docs/re-frontier.md` |
+| measured addresses | `game/facts/title_facts.h` | Guest addresses the title's own code reads, hand copies of the decomp's symbol map until plan 0001 |
 | executable identity | `game/facts/executable_identity.h.in` | Generated from `title.json` |
 | launcher | `bootstrap.py`, `tools/run.py`, `tools/config.py`, `tools/title_identity.py` | The `external/psxport` fetch, disc resolution, extraction, authentication and build for the zero-argument launch, on psxport `tools/port/launcher.py` |
 | replays | `replays/first-mission/` | Boot to the first mission and a run right then left (`PSXPORT_PAD_REPLAY`) |
@@ -32,6 +32,7 @@ Frame loop: cadence owned. Each step runs the guest to its next VSync `0x800A175
 
 - A guest function C-12 replaces → `game/<subsystem>/`, installed from `c12::Runtime::registerOverrides`.
 - Per-Core title state → `c12::Session`.
-- A measured guest address → `game/facts/title_facts.h`, with its evidence in `docs/re-frontier.md`.
+- A measured guest address → its name in `external/c12-decomp/config/symbols/scus_946.66.txt` and its evidence in
+  `external/c12-decomp/docs/re-frontier.md` (a decomp commit first), then `game/facts/title_facts.h` (plan 0001).
 - A title knob → `game/title/enhancements.*` and `docs/config.md`.
 - Anything every title shares → psxport, not here.

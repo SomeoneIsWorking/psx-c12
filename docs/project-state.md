@@ -8,7 +8,7 @@ Current focus: the first mission is reached and playable — NEW GAME shows the 
 page, then a briefing cutscene (`X SKIP`), then the first mission with the player character under
 pad control — and it presents through psxport's record path at 4:3 with `recordcheck` at 0 mismatched.
 The next step is what lies past that spawn (enemies, weapons, mission exit) and 16:9 on the record
-path. Ordered RE evidence lives in `docs/re-frontier.md`.
+path. RE knowledge lives in the decomp, `external/c12-decomp` (github.com/SomeoneIsWorking/c12-decomp, MIT, ours): the splat config of `SCUS_946.66` verified against the user's executable, the symbol map, `docs/re-frontier.md` and `docs/prior-art.md`. Addresses come from its map as generated constants once plan 0001 lands.
 
 | ID | Capability | State | Evidence or exact gap |
 | --- | --- | --- | --- |

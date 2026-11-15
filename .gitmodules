@@ -1,0 +1,3 @@
+[submodule "external/c12-decomp"]
+	path = external/c12-decomp
+	url = https://github.com/SomeoneIsWorking/c12-decomp.git
