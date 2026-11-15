@@ -74,7 +74,8 @@ private:
   std::vector<CellGroup> cells_;
 };
 
-// The extended cell list of the frame in flight, published by the collector and consumed by the terrain pass.
+// The extended cell list the collector last published; the terrain pass draws from it until the collector runs again,
+// as the guest's own list stands between its collector runs.
 class WorldVisibility {
 public:
   // Keeps `cells` nearest first, so a full packet pool drops the farthest terrain.

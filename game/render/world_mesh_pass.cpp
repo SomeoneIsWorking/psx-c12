@@ -228,7 +228,6 @@ void WorldMeshPass::run(std::uint32_t level) {
     setScratch(kSlotGroupsLeft, static_cast<std::uint32_t>(groups));
     runGroups();
   }
-  visibility.clear();
   finish();
 }
 
