@@ -7,6 +7,18 @@
 #include <algorithm>
 
 namespace c12 {
+namespace {
+
+constexpr std::uint32_t kAddressMask = 0x00FFFFFFu;
+
+// Links `packet` into the ordering-table slot as the guest's AddPrim does, keeping both tag length bytes.
+void addPrim(Core &core, psx::present::GuestRedraw &redraw, std::uint32_t slot, std::uint32_t packet) {
+  const std::uint32_t link = core.mem_r32(slot);
+  redraw.writeWord(packet, (core.mem_r32(packet) & ~kAddressMask) | (link & kAddressMask));
+  redraw.writeWord(slot, (link & ~kAddressMask) | (packet & kAddressMask));
+}
+
+} // namespace
 
 std::optional<std::uint32_t> DrawSection::draw(Core &core, psx::present::GuestRedraw &redraw) const {
   const std::array<std::uint32_t, 1> mode{core.mem_r32(kGameModeAddress)};
@@ -17,6 +29,13 @@ std::optional<std::uint32_t> DrawSection::draw(Core &core, psx::present::GuestRe
   const std::uint32_t camera = core.mem_r32(kCameraPointerAddress);
   const std::uint32_t table = core.mem_r32(camera + kCameraBuildTable);
   const std::uint32_t head = table + core.mem_r16(camera + kCameraTableLength) * 4u - 4u;
+  // The submit's draw environment (a cutscene's letterbox) belongs to the chain DrawOTag walks.
+  if ((core.mem_r32(camera + kCameraFlags) & 1u) == 0u) {
+    const std::uint32_t environment =
+        camera + kCameraDrawEnvironment + core.mem_r32(kBufferParityAddress) * kCameraDrawEnvironmentStride;
+    addPrim(core, redraw, head, environment);
+    addPrim(core, redraw, head, environment + kCameraDrawEnvironmentPair);
+  }
   if (std::ranges::find(heads_, head) == heads_.end()) {
     heads_ = {heads_[1], head};
   }

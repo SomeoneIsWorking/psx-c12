@@ -49,6 +49,13 @@ inline constexpr std::uint32_t kGameModeAddress = 0x800F1B4Cu;
 // by buffer parity and the one being built, which Gfx_SwapAndSubmit sets after the VSync.
 inline constexpr std::uint32_t kCameraTableLength = 0x6Cu;
 inline constexpr std::uint32_t kCameraBuildTable = 0x7Cu;
+// Gfx_SwapAndSubmit links each camera's two DR_ENV packets (+0x30 and +0x3C, 0x1C apart by buffer parity) into the
+// last slot of its build table before DrawOTag, unless flag bit 0 at +8 is set; the parity word is gp+0xCB8.
+inline constexpr std::uint32_t kCameraFlags = 0x8u;
+inline constexpr std::uint32_t kCameraDrawEnvironment = 0x30u;
+inline constexpr std::uint32_t kCameraDrawEnvironmentPair = 0xCu;
+inline constexpr std::uint32_t kCameraDrawEnvironmentStride = 0x1Cu;
+inline constexpr std::uint32_t kBufferParityAddress = 0x800F08C8u;
 // Its source transform: a MATRIX of the camera's world rotation and position, which Camera_BuildMatrices makes the
 // view.
 inline constexpr std::uint32_t kCameraSourceTransform = 0x80u;
