@@ -4,7 +4,7 @@
 
 #include "core.h"
 #include "game.h"
-#include "lightrec_executor.h"
+#include "guest_executor.h"
 #include "logic_frame.h"
 
 #include <lucent/log.h>
@@ -19,7 +19,7 @@ FrameDriver::FrameDriver(Game &game) : game_(game) {
 void FrameDriver::stepFrame(Core &core, std::uint32_t frame) {
   psx::frame::LogicFrame::begin(game_, frame);
 
-  auto &executor = core.lightrecExecutor();
+  auto &executor = core.executor();
   const auto result = executor.executeUntilExit(core.pc, psx::cpu::ExecutionBudget::untilFieldEdge(core));
   // The replaced VSync(n) (gameplay loop FUN_80038094 asks for 2) or a turn that ran out without one.
   const std::uint32_t fields = game_.timing.takeStepFields();

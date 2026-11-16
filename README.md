@@ -1,6 +1,6 @@
 # C-12: Final Resistance
 
-C-12 is being migrated to a native/Lightrec hybrid over the authenticated USA PlayStation release.
+C-12 is being migrated to a native/interpreter hybrid over the authenticated USA PlayStation release.
 The offline translator, generated source corpus, static dispatcher, prior build tree, and generated
 gameplay executable have been deleted before replacement work. They are not retained as a bridge or
 oracle.
