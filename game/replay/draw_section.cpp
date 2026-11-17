@@ -3,6 +3,8 @@
 #include "core.h"
 #include "facts/title_facts.h"
 #include "guest_redraw.h"
+#include "render/visor_frame.h"
+#include "runtime/session.h"
 
 #include <algorithm>
 
@@ -28,7 +30,7 @@ std::optional<std::uint32_t> DrawSection::draw(Core &core, psx::present::GuestRe
   // DrawOTag walks the table being built from its last entry.
   const std::uint32_t camera = core.mem_r32(kCameraPointerAddress);
   const std::uint32_t table = core.mem_r32(camera + kCameraBuildTable);
-  const std::uint32_t head = table + core.mem_r16(camera + kCameraTableLength) * 4u - 4u;
+  const std::uint32_t head = orderingTableHead(table, core.mem_r16(camera + kCameraTableLength));
   // The submit's draw environment (a cutscene's letterbox) belongs to the chain DrawOTag walks.
   if ((core.mem_r32(camera + kCameraFlags) & 1u) == 0u) {
     const std::uint32_t environment =
@@ -36,6 +38,8 @@ std::optional<std::uint32_t> DrawSection::draw(Core &core, psx::present::GuestRe
     addPrim(core, redraw, head, environment);
     addPrim(core, redraw, head, environment + kCameraDrawEnvironmentPair);
   }
+  // The redraw sees only its own host packets, so the visor's frame moves again for it.
+  visorFrame(core).anchor(core, head);
   if (std::ranges::find(heads_, head) == heads_.end()) {
     heads_ = {heads_[1], head};
   }

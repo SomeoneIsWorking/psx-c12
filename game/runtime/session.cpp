@@ -13,4 +13,8 @@ DrawReplay &drawReplay(Core &core) {
   return static_cast<Session &>(*core.game->sessionState).drawReplay;
 }
 
+VisorFrame &visorFrame(Core &core) {
+  return static_cast<Session &>(*core.game->sessionState).visorFrame;
+}
+
 } // namespace c12

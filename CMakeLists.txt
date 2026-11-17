@@ -40,6 +40,7 @@ if(C12_BUILD_RUNTIME)
     game/render/draw_distance.cpp
     game/render/fog_table.cpp
     game/render/view_frustum.cpp
+    game/render/visor_frame.cpp
     game/render/world_mesh_pass.cpp
     game/replay/camera_motion.cpp
     game/replay/draw_replay.cpp

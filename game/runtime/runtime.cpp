@@ -5,6 +5,7 @@
 #include "frame/frame_driver.h"
 #include "render/cell_collector.h"
 #include "render/view_frustum.h"
+#include "render/visor_frame.h"
 #include "render/world_mesh_pass.h"
 #include "runtime/session.h"
 #include "title/enhancements.h"
@@ -33,6 +34,7 @@ void Runtime::registerOverrides(Game &game) {
   installViewFrustumOverride(game);
   installCellCollectorOverride(game);
   installWorldMeshPassOverride(game);
+  VisorFrame::registerOverrides(game);
   DrawReplay::registerOverrides(game);
 }
 

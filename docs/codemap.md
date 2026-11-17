@@ -24,6 +24,7 @@ Frame loop: cadence owned. Each step runs the guest to its next VSync `0x800A175
 | `drawWorldMeshPass` | `game/render/world_mesh_pass.*` | `FUN_8006769C`: terrain polygons, the widened screen reject, the extended far clip |
 | `DrawDistance` | `game/render/draw_distance.*` | The one percent-to-scale rule for the draw distance knob |
 | `FogTables` | `game/render/fog_table.*` | The fade tables, stretched by the draw distance scale |
+| `VisorFrame` | `game/render/visor_frame.*` | `Visor_Draw` (`0x80090214`): the visor's rounded frame lines moved to the drawn picture's edges, again for each in-between |
 | `DrawReplay` | `game/replay/draw_replay.*` | The 60 fps in-betweens: samples at `Game_Draw` (`0x80038440`) and replays it per in-between |
 | `DrawSection` | `game/replay/draw_section.*` | `Game_Draw` as psxport's `ReplaySection`: its run and the main camera's ordering table |
 | `CameraMotion` | `game/replay/camera_motion.*` | The main camera's source MATRIX (camera + 0x80), blended |

@@ -13,6 +13,11 @@ class Core;
 
 namespace c12 {
 
+// The last entry of an ordering table of `length` entries, where DrawOTag starts its walk.
+inline std::uint32_t orderingTableHead(std::uint32_t table, std::uint32_t length) {
+  return table + length * 4u - 4u;
+}
+
 class DrawSection final : public psx::present::ReplaySection {
 public:
   [[nodiscard]] std::optional<std::uint32_t> draw(Core &core, psx::present::GuestRedraw &redraw) const override;

@@ -1,7 +1,7 @@
 # 0013 — The visor covers only the 4:3 centre at 16:9
 
-Status: open (2026-11-17). Owner: psxport `RecordRasterizer` (render-to-texture of a displayed buffer); the title's part
-waits on it.
+Status: fixed (2026-11-17). Owners: psxport `RecordPlanner`/`record.frag` (a displayed-buffer read) and
+`PacketChainWalker` (the in-between capture draws host moves); the title's `VisorFrame`.
 
 ## Observed
 First mission (`replays/first-mission/menu-to-mission-run-right-left.pad`, 2,050 frames), R2 held for 30 frames, 16:9:
@@ -31,3 +31,22 @@ so they also stay at the 4:3 edge.
 2. Title: at 16:9 the row sprites and the subtractive rectangle extend across the drawn window, and each row's left
    and right frame lines move to the drawn picture's edge (`HostPackets::moveX`), so the frame bends at the screen
    edge.
+
+## Fix
+- psxport: a 15-bit textured draw mapping a displayed buffer one texel per pixel reads that buffer's canvas
+  (`docs/presentation.md`, Displayed-buffer read), and the sprites and the 0x62 tile continue into the margins as a
+  read-back sprite does, so the tint and afterglow cover the drawn window with no title code.
+- psxport: `PacketChainWalker::capture` drew a redraw's chain without its host moves and replacements, so every
+  in-between showed the frame lines at the 4:3 edge; it now draws each node through `drawnPacket`, as the DrawOTag walk
+  does.
+- Title: `VisorFrame` (`game/render/visor_frame.*`) records where `Visor_Draw` put the 176 rows of frame lines and moves
+  the left one of each row by the left margin and the right one by the right margin (`HostPackets::moveX`), on the real
+  frame and again in each in-between redraw (`DrawSection::draw`).
+
+## Proof
+Same replay, R2 held, then turning left with the visor up, 16:9, fps60, ires 0, 3840x2160 sink, unpaced: the tint,
+afterglow and rounded frame reach both screen edges on real and in-between presents alike
+(`scratch/visor13/edges-turn-169-seq.png`, six consecutive presents' margins; `turn-169-3.png`, real/in-between/real).
+While turning, each in-between's margins sit halfway: the shift from the real present before equals the shift to the
+one after (29/30, 35/35, 40/40 quarter-pixels left; 30/31, 35/36, 36/40 right). In-betweens refused: 0. 4:3 draws
+the same visor as before (`turn-43-3.png`).

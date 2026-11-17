@@ -94,6 +94,19 @@ inline constexpr std::uint32_t kBufferParityAddress = 0x800F08C8u;
 // Its source transform: a MATRIX of the camera's world rotation and position, which Camera_BuildMatrices makes the
 // view.
 inline constexpr std::uint32_t kCameraSourceTransform = 0x80u;
+// Camera_DrawLists' scratchpad draw state: the table being linked into (its length a u16), and the packet pool's cursor
+// and end.
+inline constexpr std::uint32_t kDrawTableLengthAddress = 0x1F800066u;
+inline constexpr std::uint32_t kDrawTableAddress = 0x1F800068u;
+inline constexpr std::uint32_t kPacketCursorAddress = 0x1F80006Cu;
+inline constexpr std::uint32_t kPacketEndAddress = 0x1F800070u;
+// ScreenEffect_Draw runs the active screen effect once a gameplay frame, before Game_Draw. Visor_Draw (effect 2) builds
+// the visor's rounded frame first when it fits: a LINE_G2 from x 0 and one from x 512 on each of 176 rows, end to end
+// from the cursor.
+inline constexpr std::uint32_t kScreenEffectDrawAddress = 0x8008F940u;
+inline constexpr std::uint32_t kVisorDrawAddress = 0x80090214u;
+inline constexpr std::uint32_t kVisorFrameRows = 0xB0u;
+inline constexpr std::uint32_t kVisorFrameLineBytes = 0x14u;
 // The object list: a head word, records linked by +4 up to the sentinel, each with its class (draw method at
 // class + 0x84) and its world MATRIX.
 inline constexpr std::uint32_t kObjectListHead = 0x800F1100u;
