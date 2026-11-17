@@ -2,9 +2,11 @@
 
 #pragma once
 
+#include "debug/mission_warp.h"
 #include "game_runtime.h"
 
 #include <cstdint>
+#include <string>
 
 class Core;
 class Game;
@@ -26,11 +28,13 @@ public:
   std::uint64_t boundaries() const {
     return boundaries_;
   }
+  std::string armWarp(std::uint32_t mission);
 
 private:
   Game &game_;
   std::uint64_t fields_ = 0;
   std::uint64_t boundaries_ = 0;
+  MissionWarp warp_;
 };
 
 } // namespace c12

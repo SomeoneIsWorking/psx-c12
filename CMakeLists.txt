@@ -30,8 +30,11 @@ if(C12_BUILD_RUNTIME)
 
   add_library(c12_runtime STATIC
     game/cd/cd_command_completion.cpp
+    game/debug/debug_menu.cpp
+    game/debug/mission_warp.cpp
     game/frame/frame_driver.cpp
     game/frame/vsync_continuation.cpp
+    game/frontend/publisher_card_skip.cpp
     game/render/cell_collector.cpp
     game/render/cell_output.cpp
     game/render/draw_distance.cpp

@@ -14,6 +14,9 @@ Frame loop: cadence owned. Each step runs the guest to its next VSync `0x800A175
 | `c12::Session`, `worldVisibility`, `drawReplay` | `game/runtime/session.*` | Per-Core title state: the extended cell list the collector last published, the draw replay |
 | `c12::FrameDriver` | `game/frame/frame_driver.*` | One logic frame: one guest turn to the VSync, one commit of its fields, audio per field |
 | `resumeVsyncContinuation` | `game/frame/vsync_continuation.*` | Resuming at a VSync continuation in `r31`, or refusing it |
+| `DebugMenu` | `game/debug/debug_menu.*` | The Debug tab and `warp <mission>`, over the missions a new game plays |
+| `MissionWarp` | `game/debug/mission_warp.*` | The mission warp: the guest's next-mission request with a chosen mission, applied at a frame start |
+| `PublisherCardSkip` | `game/frontend/publisher_card_skip.*` | Start/Cross ends the front end's publisher card from its first frame |
 | `completeCdReadySyncCommand` | `game/cd/cd_command_completion.*` | `CdReadySync` (`0x800ABD98`) and the command-status completion it owes |
 | `rebuildViewFrustumCorners` | `game/render/view_frustum.*` | `FUN_800660D8`, widened with the canvas |
 | `collectVisibleCells`, `CellCollector` | `game/render/cell_collector.*` | `FUN_800684C0`: the retail cell buffer and the extended host list |

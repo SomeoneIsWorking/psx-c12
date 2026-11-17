@@ -1,6 +1,7 @@
 #include "frame/frame_driver.h"
 
 #include "frame/vsync_continuation.h"
+#include "frontend/publisher_card_skip.h"
 
 #include "core.h"
 #include "game.h"
@@ -18,6 +19,8 @@ FrameDriver::FrameDriver(Game &game) : game_(game) {
 
 void FrameDriver::stepFrame(Core &core, std::uint32_t frame) {
   psx::frame::LogicFrame::begin(game_, frame);
+  warp_.apply(core);
+  PublisherCardSkip::apply(core);
 
   auto &executor = core.executor();
   const auto result = executor.executeUntilExit(core.pc, psx::cpu::ExecutionBudget::untilFieldEdge(core));
@@ -43,6 +46,10 @@ void FrameDriver::stepFrame(Core &core, std::uint32_t frame) {
     game_.spu_audio.frame();
   }
   fields_ += fields;
+}
+
+std::string FrameDriver::armWarp(std::uint32_t mission) {
+  return warp_.arm(mission);
 }
 
 } // namespace c12

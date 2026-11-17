@@ -1,9 +1,9 @@
 #pragma once
 
+#include "debug/debug_menu.h"
 #include "game_runtime.h"
 #include "stock_libcd.h"
 #include "stock_vsync.h"
-#include "title_debug_menu.h"
 #include "widescreen/widescreen_policy.h"
 
 namespace c12 {
@@ -24,7 +24,6 @@ public:
   }
   psx::present::ReplayFrame *replayFrame(Core &core) override;
   std::span<const psx::game::TitleIntSetting> titleIntSettings() const override;
-  // No debug route reaches a C-12 screen yet.
   const psx::game::TitleDebugMenu &debugMenu() const override {
     return debugMenu_;
   }
@@ -33,7 +32,7 @@ private:
   psx::hle::StockVSync vsync_;
   psx::cd::GuestInterruptLibcd libcd_;
   WidescreenPolicy widescreenPolicy_;
-  psx::game::TitleDebugMenu debugMenu_;
+  DebugMenu debugMenu_;
 };
 
 } // namespace c12

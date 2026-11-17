@@ -42,6 +42,41 @@ inline constexpr psx::gpu::GuestPacketPoolWindows kPacketPoolWindows{
     .end = kPacketPoolHigh,
 };
 
+// The scene loop (0x8003736C): its state (3 while a mission runs), the leave request the gameplay loop ends on (5 loads
+// the mission at the index), the mission index and its section; the gameplay loop's VSync(2) returns to
+// kFrameLoopVSyncReturn.
+inline constexpr std::uint32_t kSceneStateAddress = 0x800F1B40u;
+inline constexpr std::uint32_t kSceneStateRunning = 3u;
+inline constexpr std::uint32_t kLeaveRequestAddress = 0x800F1B44u;
+inline constexpr std::uint32_t kLeaveNextMission = 5u;
+inline constexpr std::uint32_t kMissionIndexAddress = 0x800F1520u;
+inline constexpr std::uint32_t kMissionSectionAddress = 0x800F1528u;
+inline constexpr std::uint32_t kFrameLoopVSyncReturn = 0x80038104u;
+// The front end (scene state 6) runs the module whose buffer the slot gp+0x29C holds (RELOCS/GT.LVB); offsets are
+// from that buffer: its frame's VSync(2) return, its state word (1 the publisher card) and the card's frame count,
+// which lets buttons end the card only below kFrontEndCardButtonsFrom.
+inline constexpr std::uint32_t kSceneStateFrontEnd = 6u;
+inline constexpr std::uint32_t kModuleSlotAddress = 0x800EFEACu;
+inline constexpr std::uint32_t kFrontEndFrameVSyncReturn = 0x1848u;
+inline constexpr std::uint32_t kFrontEndState = 0x35E4u;
+inline constexpr std::uint32_t kFrontEndStateCard = 1u;
+inline constexpr std::uint32_t kFrontEndCardHold = 0x3628u;
+inline constexpr std::uint32_t kFrontEndCardButtonsFrom = 0x96u;
+// The buttons pressed this frame (gp+0xA54, the pad scan's edges) and Start/Cross, the title's confirm.
+inline constexpr std::uint32_t kPressedButtonsAddress = 0x800F0664u;
+inline constexpr std::uint32_t kConfirmButtons = 0x1020u;
+
+// The level table: one record per mission, its module file name (a string pointer) first and the mission
+// Mission_Advance loads next (u16); Mission_Advance wraps past the last. NEW GAME loads kFirstMission; 0 and 1 are
+// TI.LVB records that name themselves next.
+inline constexpr std::uint32_t kLevelTableAddress = 0x800D1F78u;
+inline constexpr std::uint32_t kLevelRecordStride = 0x5Cu;
+inline constexpr std::uint32_t kLevelModuleName = 0x0u;
+inline constexpr std::uint32_t kLevelNextMission = 0x36u;
+inline constexpr std::uint32_t kFirstMission = 2u;
+inline constexpr std::uint32_t kLevelModuleNameMax = 32u;
+inline constexpr std::uint32_t kLastMission = 0x17u;
+
 // The gameplay loop's draw section Game_Draw(mode) and its mode word (0 in play, 1 in the pause view).
 inline constexpr std::uint32_t kDrawSectionAddress = 0x80038440u;
 inline constexpr std::uint32_t kGameModeAddress = 0x800F1B4Cu;
